@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "HSBUK3JBKYkZ/duEn1hsIPgHIoTx/ty5Kk81KbjdlJ753tp7D8+qHx1avLGIS8oiXd9Gz8zCfTEjciwEqVwbiQ==",
+  "dgSpecHash": "dL8LweuQS3EeJvCU06WQd44wCmsNXyf8QwM8fMU6XPnCraHcNrAtogveXUlzCpjxQv5IT/yg0TXAga+G/GpS/A==",
   "success": true,
   "projectFilePath": "C:\\Users\\igorb\\source\\repos\\DnDBot\\DnDBot\\DnDBot.csproj",
   "expectedPackageFiles": [
@@ -17,7 +17,7 @@
     "C:\\Users\\igorb\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\igorb\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\igorb\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
-    "C:\\Microsoft\\Xamarin\\NuGet\\runtime.native.system.io.compression\\4.3.0\\runtime.native.system.io.compression.4.3.0.nupkg.sha512",
+    "C:\\Users\\igorb\\.nuget\\packages\\runtime.native.system.io.compression\\4.3.0\\runtime.native.system.io.compression.4.3.0.nupkg.sha512",
     "C:\\Users\\igorb\\.nuget\\packages\\runtime.native.system.net.http\\4.3.0\\runtime.native.system.net.http.4.3.0.nupkg.sha512",
     "C:\\Users\\igorb\\.nuget\\packages\\runtime.native.system.net.security\\4.3.0\\runtime.native.system.net.security.4.3.0.nupkg.sha512",
     "C:\\Users\\igorb\\.nuget\\packages\\runtime.native.system.security.cryptography.apple\\4.3.0\\runtime.native.system.security.cryptography.apple.4.3.0.nupkg.sha512",

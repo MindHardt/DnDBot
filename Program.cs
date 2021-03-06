@@ -1,11 +1,15 @@
 ﻿using System;
 using DSharpPlus;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DnDBot
 {
     class Program
     {
+        private static Dictionary<string, List<Macro>> Macros = new Dictionary<string, List<Macro>>();
+        private static readonly string token = FileWorker.GetLine(FileWorker.CreateUnexsistent(Environment.CurrentDirectory + "\\token.txt"), 1);
         static void Main(string[] args)
         {
             MainTask(args).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -14,23 +18,52 @@ namespace DnDBot
         {
             var discord = new DiscordClient(new DiscordConfiguration
             {
-                Token = "ODEzMjk5MzY3ODA5MTIyMzY0.YDNSDw.fEdrSk_Ful-B1ISHIDH_fOb0dwU",
+                Token = token,
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug
-            });
+            }) ;
             discord.MessageCreated += async e =>
             {
                 string message = e.Message.Content.ToLower();
-                if (message == "=magicshop")
+                if (Macros.TryGetValue(e.Author.Mention, out List<Macro> macros))
                 {
-                    await e.Message.RespondAsync(DnD.MagicShop());
-                    await e.Message.DeleteAsync();
+                    message = Macro.UseMacros(macros, message);
+                }
+                if (message.StartsWith("=m"))
+                {
+                    if (message.StartsWith("=mcreate"))
+                    {
+
+                    }
+                    if (message.StartsWith("=mlist"))
+                    {
+
+                    }
+                    if (message.StartsWith("=mstart"))
+                    {
+                        string filePath = Environment.CurrentDirectory + "\\Macros\\" + e.Author.Mention + ".Macros.txt";
+                        string respond = "Запускаю создание словаря макросов...\n";
+                        FileWorker.CreateUnexsistentMacrosFile(filePath, out string log);
+                        respond += log;
+
+                    }
+                    if (message.StartsWith("=mdelete"))
+                    {
+
+                    }
+                    if (message.StartsWith("=moverwrite"))
+                    {
+                        string filePath = Environment.CurrentDirectory + "\\Macros\\" + e.Author.Mention + ".Macros.txt";
+                    }
+                }
+                if (message == "=open")
+                {
+                    System.Diagnostics.Process.Start("explorer", Environment.CurrentDirectory);
                 }
                 if (message.StartsWith("=r"))
                 {
-                    await e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromName(discord, ":ok_hand:"));
-                    await e.Message.RespondAsync(Roll(message));
+                    await e.Message.RespondAsync(e.Author.Mention + "\n" +DnD.Roll(message, out int xyu));
                 }
                 if (message == "=u gay")
                 {
@@ -39,46 +72,43 @@ namespace DnDBot
                     await e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromName(discord, ":regional_indicator_u:"));
                     await e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromName(discord, ":middle_finger:"));
                 }
-
             };
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }
-        static string Roll(string s)
+    }
+    class Macro
+    {
+        public string Key { get; }
+        public string Value { get; }
+        public static KeyValuePair<string, string> GetMacro(string pair)
         {
-            if (!CheckRollString(s, out int count, out int die, out int constant)) return ("**Введенные данные неверны, проверьте правильность написания.**\nПример верного ввода: *=r 2d8+3*, *=r 1d20*.");
-            else
-            {
-                string result = constant < 0 ? $"**Бросок {count}d{die}{constant}**\n\n" : $"**Бросок {count}d{die}+{constant}**\n";
-                int sum = constant;
-                Random rnd = new Random();
-                if (count > 10) result += "Вы бросаете слишком много кубов! Результаты бросков не будут приведены.";
-                for (int i = 1; i <= count; i++)
-                {
-                    int currentDie = rnd.Next(1, die+1);
-                    if (count <= 10) result += $"\nКуб №{i} = **{currentDie}**";
-                    if (count == 1 && die == 20 && currentDie == 1) result += ":red_circle:";
-                    if (count == 1 && die == 20 && currentDie == 20) result += ":green_circle:";
-                    sum += currentDie;
-                }
-                result += $"\nКонстанта = **{constant}**\nРЕЗУЛЬТАТ = **{sum}**:white_check_mark:";
-                return (result);
-            };
+            string[] pairs = pair.Split('>');
+            return new KeyValuePair<string, string>(pairs[0], pairs[1]);
         }
-        static bool CheckRollString(string s, out int count, out int die, out int constant)
+        public static string UseMacros(List<Macro> list, string line)
         {
-            Console.WriteLine(s);
-            s = s.Replace("=r", "");
-            s = s.Replace("d", " ");
-            s = s.Replace("+", " ");
-            s = s.Replace("-", " -");
-            Console.WriteLine(s);
-            constant = 0;
-            die = 1;
-            string[] parts = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            bool result = parts.Length < 3 ? int.TryParse(parts[0], out count) && int.TryParse(parts[1], out die) && count > 0 && die > 0 : int.TryParse(parts[0], out count) && int.TryParse(parts[1], out die) && int.TryParse(parts[2], out constant) && count > 0 && die > 0;
-            return (result);
+            foreach (Macro macro in list)
+            {
+                if (line == macro.Key) return macro.Value;
+            }
+            return line;
+
+        }
+        public static void Overwrite(string path, List<Macro> list)
+        {
+            File.WriteAllText(path, MacrosList(list));
         }
 
+        public static string MacrosList(List<Macro> list)
+        {
+            string result = String.Empty;
+            foreach (Macro macro in list)
+            {
+                result += macro.Key + ">" + macro.Value + "\n";
+            }
+            return result;
+        }
     }
+    
 }
